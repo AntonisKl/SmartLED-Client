@@ -36,11 +36,19 @@
 
     <com.skydoves.colorpickerpreference.ColorPickerView
         android:id="@+id/view_color_picker"
-        android:layout_width="300dp"
+        android:layout_width="350dp"
         android:layout_gravity="center"
         android:layout_weight="10"
         android:layout_height="0dp"
         app:palette="@drawable/palette"
         app:selector="@drawable/wheel" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="10dp"
+        android:id="@+id/color_modes_button"
+        android:layout_height="wrap_content"
+        android:text="modes" />
 
 </LinearLayout>

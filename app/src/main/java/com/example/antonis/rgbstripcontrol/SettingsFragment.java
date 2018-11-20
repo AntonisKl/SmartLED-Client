@@ -15,24 +15,24 @@ import android.widget.EditText;
 
 public class SettingsFragment extends DialogFragment {
 
-    String ipAddressStr;
-    EditText ipAddress;
+    String urlStr;
+    EditText urlText;
     Button submitSettingsButton;
     SharedPreferences storedSettings;
 
-    private OnSubmitSettingsListener onSubmitSettingsListener;
+//    private OnSubmitSettingsListener onSubmitSettingsListener;
 
-    public static interface OnSubmitSettingsListener {
-        void OnSubmitSettings(String ipAddress);
+//    public static interface OnSubmitSettingsListener {
+//        void OnSubmitSettings(String ipAddress);
+//    }
+
+    public void setDefaultUrl(String urlStr) {
+        this.urlStr = urlStr;
     }
 
-    public void setDefaultIpAddress(String ipAddress) {
-        ipAddressStr = ipAddress;
-    }
-
-    public void setOnSubmitSettingsListener(OnSubmitSettingsListener onSubmitSettingsListener) {
-        this.onSubmitSettingsListener = onSubmitSettingsListener;
-    }
+//    public void setOnSubmitSettingsListener(OnSubmitSettingsListener onSubmitSettingsListener) {
+//        this.onSubmitSettingsListener = onSubmitSettingsListener;
+//    }
 
     public SettingsFragment() {
         // Required empty public constructor
@@ -45,24 +45,24 @@ public class SettingsFragment extends DialogFragment {
         View fragmentView = inflater.inflate(R.layout.fragment_settings, container, false);
 
         storedSettings = getActivity().getPreferences(Context.MODE_PRIVATE);
-        ipAddress = fragmentView.findViewById(R.id.text_ip_address);
+        urlText = fragmentView.findViewById(R.id.text_ip_address);
         submitSettingsButton = fragmentView.findViewById(R.id.button_submit_settings);
 
         getDialog().setTitle("Settings");
 
 
-        String storedIpAddress = storedSettings.getString("IP", ipAddressStr);
+        String storedIpAddress = storedSettings.getString("URL", urlStr);
 
         if (storedIpAddress != null)
-            ipAddress.setText(storedIpAddress);
+            urlText.setText(storedIpAddress);
 
         submitSettingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!ipAddress.getText().toString().equals("")) {
-                    onSubmitSettingsListener.OnSubmitSettings(ipAddress.getText().toString());
+                if (!urlText.getText().toString().equals("")) {
+//                    onSubmitSettingsListener.OnSubmitSettings(urlText.getText().toString());
                     SharedPreferences.Editor editor = storedSettings.edit();
-                    editor.putString("IP", ipAddress.getText().toString());
+                    editor.putString("URL", urlText.getText().toString());
                     editor.apply();
                 }
                 dismiss();
