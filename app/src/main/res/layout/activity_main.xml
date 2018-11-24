@@ -2,53 +2,153 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:background="#607d8b"
     android:layout_height="match_parent"
+    android:background="#607d8b"
     android:orientation="vertical">
 
-    <include layout="@layout/toolbar"/>
+    <include layout="@layout/toolbar" />
 
     <!--<TextView-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="Hello World!"-->
-        <!--app:layout_constraintBottom_toBottomOf="parent"-->
-        <!--app:layout_constraintLeft_toLeftOf="parent"-->
-        <!--app:layout_constraintRight_toRightOf="parent"-->
-        <!--app:layout_constraintTop_toTopOf="parent" />-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="Hello World!"-->
+    <!--app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--app:layout_constraintLeft_toLeftOf="parent"-->
+    <!--app:layout_constraintRight_toRightOf="parent"-->
+    <!--app:layout_constraintTop_toTopOf="parent" />-->
 
     <!--<Button-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="send request"-->
+    <!--android:layout_gravity="center"-->
+    <!--android:id="@+id/button_send_request"/>-->
+
+    <!--<TextView-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="0dp"-->
+    <!--android:layout_gravity="center"-->
+    <!--android:layout_marginTop="20dp"-->
+    <!--android:layout_weight="1"-->
+    <!--android:text="Choose a color"-->
+    <!--android:textColor="#212121"-->
+    <!--android:textSize="26sp" />-->
+
+    <ImageButton
+        android:id="@+id/button_off"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_gravity="right"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@drawable/button_off"
+        android:scaleType="fitCenter"
+        android:src="@drawable/button_off_48dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_weight="10"
+        android:orientation="horizontal">
+
+        <com.skydoves.colorpickerview.ColorPickerView
+            android:id="@+id/view_color_picker"
+            android:layout_width="0dp"
+            android:layout_height="280dp"
+            android:layout_gravity="center"
+            android:layout_weight="7"
+            app:palette="@drawable/palette"
+            app:selector="@drawable/wheel" />
+
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <com.skydoves.colorpickerview.sliders.BrightnessSlideBar
+                    android:id="@+id/brightnessSlide"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="10dp"
+                    app:borderColor_BrightnessSlider="@android:color/darker_gray"
+                    app:borderSize_BrightnessSlider="5"
+                    app:selector_BrightnessSlider="@drawable/wheel" />
+
+            </FrameLayout>
+
+    </LinearLayout>
+
+
+    <HorizontalScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageButton
+                style="@style/button_color"
+                android:backgroundTint="#ff0000" />
+
+            <ImageButton
+                style="@style/button_color"
+                android:backgroundTint="#00ff00" />
+
+
+            <ImageButton
+                style="@style/button_color"
+                android:backgroundTint="#0000ff" />
+
+            <ImageButton
+                style="@style/button_color"
+                android:backgroundTint="#ffff00" />
+
+            <ImageButton
+                style="@style/button_color"
+                android:backgroundTint="#00ffff" />
+
+            <ImageButton
+                style="@style/button_color"
+                android:backgroundTint="#ff00ff" />
+
+            <ImageButton
+                style="@style/button_color"
+                android:backgroundTint="#ffffff" />
+
+            <!--<Button-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="center"-->
+            <!--android:text="off" />-->
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/button_color_modes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="modes" />
+
+        <!--<Button-->
         <!--android:layout_width="wrap_content"-->
         <!--android:layout_height="wrap_content"-->
-        <!--android:text="send request"-->
         <!--android:layout_gravity="center"-->
-        <!--android:id="@+id/button_send_request"/>-->
+        <!--android:text="off" />-->
+    </LinearLayout>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="20dp"
-        android:text="Choose a color"
-        android:textSize="26sp"
-        android:textColor="#212121"
-        android:layout_weight="1"/>
-
-    <com.skydoves.colorpickerpreference.ColorPickerView
-        android:id="@+id/view_color_picker"
-        android:layout_width="350dp"
-        android:layout_gravity="center"
-        android:layout_weight="10"
-        android:layout_height="0dp"
-        app:palette="@drawable/palette"
-        app:selector="@drawable/wheel" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_gravity="center"
-        android:layout_margin="10dp"
-        android:id="@+id/color_modes_button"
-        android:layout_height="wrap_content"
-        android:text="modes" />
 
 </LinearLayout>

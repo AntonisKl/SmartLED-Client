@@ -10,11 +10,11 @@ import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -22,24 +22,23 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.skydoves.colorpickerpreference.ColorEnvelope;
-import com.skydoves.colorpickerpreference.ColorListener;
-import com.skydoves.colorpickerpreference.ColorPickerView;
+import com.skydoves.colorpickerview.ColorEnvelope;
+import com.skydoves.colorpickerview.ColorPickerView;
+import com.skydoves.colorpickerview.listeners.ColorEnvelopeListener;
+import com.skydoves.colorpickerview.listeners.ColorListener;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     SharedPreferences storedSettings;
     ColorPickerView colorPicker;
-    int[] rgb;
+    int[] argb;
     String defaultUrl;
     String storedUrl;
     RequestQueue requestQueue;
     Button colorModesButton;
+    ImageButton offButton;
 
     private void showSettingsDialog(/*SettingsFragment.OnSubmitSettingsListener onSubmitSettingsListener*/) {
         // DialogFragment.show() will take care of adding the fragment
@@ -64,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // init views and variables
         Toolbar myToolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
@@ -72,22 +72,31 @@ public class MainActivity extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         colorPicker = findViewById(R.id.view_color_picker);
-        colorModesButton = findViewById(R.id.color_modes_button);
-        rgb = new int[3];
+        offButton = findViewById(R.id.button_off);
+        colorModesButton = findViewById(R.id.button_color_modes);
+        argb = new int[4];
 
         defaultUrl = getResources().getString(R.string.default_url);
         storedSettings = getPreferences(Context.MODE_PRIVATE);
 
         requestQueue = Volley.newRequestQueue(getApplicationContext());
 
-        colorPicker.setColorListener(new ColorListener() {
+        offButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onColorSelected(ColorEnvelope colorEnvelope) {
-                if (!Arrays.equals(rgb, colorEnvelope.getColorRGB())) {
-                    rgb = colorEnvelope.getColorRGB();
+            public void onClick(View view) {
+                storedUrl = storedSettings.getString("URL", defaultUrl);
+                sendPostColorHttpRequest(storedUrl, new int[]{0, 0, 0, 0});
+            }
+        });
+
+        colorPicker.setColorListener(new ColorEnvelopeListener() {
+            @Override
+            public void onColorSelected(ColorEnvelope colorEnvelope, boolean fromUser) {
+                if (!Arrays.equals(argb, colorEnvelope.getArgb())) {
+                    argb = colorEnvelope.getArgb();
                     storedUrl = storedSettings.getString("URL", defaultUrl);
 
-                    sendPostColorHttpRequest(storedUrl, rgb);
+                    sendPostColorHttpRequest(storedUrl, argb);
                 }
             }
         });
@@ -102,8 +111,11 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    void sendPostColorHttpRequest(String baseUrl, int[] rgb) {
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, baseUrl + rgb[0] + "&" + rgb[1] + "&" + rgb[2],
+    void sendPostColorHttpRequest(String baseUrl, int[] argb) {
+        // calculate color with brightness
+
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, baseUrl + argb[1] + "&" + argb[2] + "&" + argb[3],
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -123,7 +135,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        colorPicker.saveData();
     }
 
     @Override

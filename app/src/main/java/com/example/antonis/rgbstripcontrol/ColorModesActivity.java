@@ -3,8 +3,11 @@ package com.example.antonis.rgbstripcontrol;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,12 +35,16 @@ public class ColorModesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_color_modes);
 
+        Toolbar myToolbar = findViewById(R.id.my_toolbar);
+        setSupportActionBar(myToolbar);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+            this.getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
+
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
         colorModesList = findViewById(R.id.color_modes_list);
-
         requestQueue = Volley.newRequestQueue(getApplicationContext());
-
         Intent intent = getIntent();
-
         storedBaseUrl = intent.getStringExtra("URL");
 
         List<ColorModesListAdapter.ColorModeListItem> colorModeListItems = new ArrayList<>();
