@@ -38,9 +38,9 @@
         android:id="@+id/button_off"
         android:layout_width="35dp"
         android:layout_height="35dp"
-        android:layout_gravity="right"
+        android:layout_gravity="center"
         android:layout_marginTop="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
         android:background="@drawable/button_off"
         android:scaleType="fitCenter"
         android:src="@drawable/button_off_48dp" />
@@ -62,23 +62,26 @@
             app:palette="@drawable/palette"
             app:selector="@drawable/wheel" />
 
-            <FrameLayout
-                android:layout_width="0dp"
-                android:layout_weight="1"
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="280dp"
+            android:layout_gravity="center"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="10dp"
+            android:orientation="vertical">
+
+            <com.skydoves.colorpickerview.sliders.BrightnessSlideBar
+                android:id="@+id/brightnessSlide"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:layout_gravity="center"
+                app:borderColor_BrightnessSlider="@android:color/darker_gray"
+                app:borderSize_BrightnessSlider="5"
+                app:selector_BrightnessSlider="@drawable/wheel" />
 
-                <com.skydoves.colorpickerview.sliders.BrightnessSlideBar
-                    android:id="@+id/brightnessSlide"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginRight="10dp"
-                    app:borderColor_BrightnessSlider="@android:color/darker_gray"
-                    app:borderSize_BrightnessSlider="5"
-                    app:selector_BrightnessSlider="@drawable/wheel" />
+        </FrameLayout>
 
-            </FrameLayout>
 
     </LinearLayout>
 
