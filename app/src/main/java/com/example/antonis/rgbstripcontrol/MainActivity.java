@@ -7,9 +7,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.os.Build;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,8 +28,10 @@ import com.skydoves.colorpickerview.ColorEnvelope;
 import com.skydoves.colorpickerview.ColorPickerView;
 import com.skydoves.colorpickerview.listeners.ColorEnvelopeListener;
 import com.skydoves.colorpickerview.listeners.ColorListener;
+import com.skydoves.colorpickerview.sliders.BrightnessSlideBar;
 
 import java.util.Arrays;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -39,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
     RequestQueue requestQueue;
     Button colorModesButton;
     ImageButton offButton;
+    BrightnessSlideBar brightnessSlideBar;
+    ImageButton redButton, greenButton, blueButton, cyanButton, yellowButton, purpleButton, whiteButton;
 
     private void showSettingsDialog(/*SettingsFragment.OnSubmitSettingsListener onSubmitSettingsListener*/) {
         // DialogFragment.show() will take care of adding the fragment
@@ -71,9 +77,11 @@ public class MainActivity extends AppCompatActivity {
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
+        getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+
         colorPicker = findViewById(R.id.view_color_picker);
-        offButton = findViewById(R.id.button_off);
-        colorModesButton = findViewById(R.id.button_color_modes);
+        initPresetColorButtons();
+
         argb = new int[4];
 
         defaultUrl = getResources().getString(R.string.default_url);
@@ -95,8 +103,9 @@ public class MainActivity extends AppCompatActivity {
                 if (!Arrays.equals(argb, colorEnvelope.getArgb())) {
                     argb = colorEnvelope.getArgb();
                     storedUrl = storedSettings.getString("URL", defaultUrl);
-
+                    Log.i("argb", "a=" + argb[0] + ", r=" + argb[1] + ", g=" + argb[2] + ", b=" + argb[3]);
                     sendPostColorHttpRequest(storedUrl, argb);
+//                    ColorPickerPreferenceManager.getInstance().saveColorPickerData(colorPicker);
                 }
             }
         });
@@ -109,13 +118,15 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        brightnessSlideBar = findViewById(R.id.brightnessSlide);
+        colorPicker.attachBrightnessSlider(brightnessSlideBar);
     }
 
     void sendPostColorHttpRequest(String baseUrl, int[] argb) {
         // calculate color with brightness
 
-
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, baseUrl + argb[1] + "&" + argb[2] + "&" + argb[3],
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, baseUrl + "setColor?r=" + argb[1] + "&g=" + argb[2] + "&b=" + argb[3],
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -162,5 +173,34 @@ public class MainActivity extends AppCompatActivity {
             );
 
         return super.onOptionsItemSelected(item);
+    }
+
+    void initPresetColorButtons() {
+        offButton = findViewById(R.id.button_off);
+        colorModesButton = findViewById(R.id.button_color_modes);
+        redButton = findViewById(R.id.button_red);
+        greenButton = findViewById(R.id.button_green);
+        blueButton = findViewById(R.id.button_blue);
+        cyanButton = findViewById(R.id.button_cyan);
+        yellowButton = findViewById(R.id.button_yellow);
+        purpleButton = findViewById(R.id.button_purple);
+        whiteButton = findViewById(R.id.button_white);
+        redButton.setOnClickListener(createColorButtonOnClickListner(new int[]{0, 255, 0, 0}));
+        greenButton.setOnClickListener(createColorButtonOnClickListner(new int[]{0, 0, 255, 0}));
+        blueButton.setOnClickListener(createColorButtonOnClickListner(new int[]{0, 0, 0, 255}));
+        cyanButton.setOnClickListener(createColorButtonOnClickListner(new int[]{0, 0, 255, 255}));
+        yellowButton.setOnClickListener(createColorButtonOnClickListner(new int[]{0, 255, 255, 0}));
+        purpleButton.setOnClickListener(createColorButtonOnClickListner(new int[]{0, 255, 0, 255}));
+        whiteButton.setOnClickListener(createColorButtonOnClickListner(new int[]{0, 255, 255, 255}));
+    }
+
+    View.OnClickListener createColorButtonOnClickListner(final int[] argb) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                storedUrl = storedSettings.getString("URL", defaultUrl);
+                sendPostColorHttpRequest(storedUrl, argb);
+            }
+        };
     }
 }
