@@ -2,7 +2,9 @@ package com.example.antonis.rgbstripcontrol;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
@@ -27,8 +29,11 @@ import java.util.List;
 public class ColorModesActivity extends AppCompatActivity {
 
     ListView colorModesList;
+    SharedPreferences storedSettings;
     RequestQueue requestQueue;
-    String storedBaseUrl;
+    RequestHandler requestHandler;
+    String storedUrl;
+    String defaultUrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,39 +48,29 @@ public class ColorModesActivity extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         colorModesList = findViewById(R.id.color_modes_list);
+        storedSettings = getSharedPreferences("Settings", Context.MODE_PRIVATE);
+        storedUrl = storedSettings.getString("URL", defaultUrl);
+        defaultUrl = getResources().getString(R.string.default_url);
         requestQueue = Volley.newRequestQueue(getApplicationContext());
+        requestHandler = new RequestHandler(requestQueue);
         Intent intent = getIntent();
-        storedBaseUrl = intent.getStringExtra("URL");
 
         List<ColorModesListAdapter.ColorModeListItem> colorModeListItems = new ArrayList<>();
-        colorModeListItems.add(new ColorModesListAdapter.ColorModeListItem("Night Light", -1, new int[]{255, 255, 255}));
+        colorModeListItems.add(new ColorModesListAdapter.ColorModeListItem("Rainbow effect", -1, new int[]{255, 255, 255}, new ColorModesListAdapter.ColorModeListItemOnClickI() {
+            @Override
+            public void onClick() {
+                requestHandler.addRainbowEffectHttpRequest(storedUrl, 1);
+            }
+        }));
 
         colorModesList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                sendPostColorHttpRequest(storedBaseUrl, ((ColorModesListAdapter.ColorModeListItem) adapterView.getItemAtPosition(i)).rgb);
+                ((ColorModesListAdapter.ColorModeListItem) adapterView.getItemAtPosition(i)).onClickI.onClick();
             }
         });
 
         colorModesList.setAdapter(new ColorModesListAdapter(this, colorModeListItems));
-    }
-
-    void sendPostColorHttpRequest(String baseUrl, int[] rgb) {
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, baseUrl + rgb[0] + "&" + rgb[1] + "&" + rgb[2],
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        // Display the first 500 characters of the response string.
-//						Log.i("POST Request", "Got response");
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-//                        Log.i("POST Request", "Error: " + error);
-                    }
-                });
-        requestQueue.add(stringRequest);
     }
 
     private void showSettingsDialog(/*SettingsFragment.OnSubmitSettingsListener onSubmitSettingsListener*/) {
@@ -91,9 +86,15 @@ public class ColorModesActivity extends AppCompatActivity {
 
         // Create and show the dialog.
         SettingsFragment newFragment = new SettingsFragment();
-        newFragment.setDefaultUrl(storedBaseUrl);
+        newFragment.setDefaultUrl(storedUrl);
 //		newFragment.setOnSubmitSettingsListener(onSubmitSettingsListener);
         newFragment.show(getSupportFragmentManager(), "dialog");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        storedUrl = storedSettings.getString("URL", defaultUrl);
     }
 
     @Override

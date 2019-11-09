@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -12,16 +13,22 @@ import android.widget.TextView;
 import java.util.List;
 
 public class ColorModesListAdapter extends ArrayAdapter<ColorModesListAdapter.ColorModeListItem> {
+
+    public interface ColorModeListItemOnClickI {
+        void onClick();
+    }
+
     public static class ColorModeListItem {
         String colorModeName;
         int imageId;
         int[] rgb;
+        ColorModeListItemOnClickI onClickI;
 
-        public ColorModeListItem(String name, int imageId, int[] rgb)
-        {
+        public ColorModeListItem(String name, int imageId, int[] rgb, ColorModeListItemOnClickI onClickI) {
             colorModeName = name;
             this.imageId = imageId;
             this.rgb = rgb;
+            this.onClickI = onClickI;
         }
 
         void setColorModeName(String name) {
@@ -60,8 +67,6 @@ public class ColorModesListAdapter extends ArrayAdapter<ColorModesListAdapter.Co
         // Check if an existing view is being reused, otherwise inflate the view
         ViewHolder viewHolder; // view lookup cache stored in tag
 
-//        final View result;
-
         if (convertView == null) {
 
             viewHolder = new ViewHolder();
@@ -70,12 +75,9 @@ public class ColorModesListAdapter extends ArrayAdapter<ColorModesListAdapter.Co
             viewHolder.colorModeName = (TextView) convertView.findViewById(R.id.color_mode_text);
             viewHolder.colorModeImage = (ImageView) convertView.findViewById(R.id.color_mode_image);
 
-//            result = convertView;
-
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
-//            result = convertView;
         }
 
         if (colorModeItem != null) {

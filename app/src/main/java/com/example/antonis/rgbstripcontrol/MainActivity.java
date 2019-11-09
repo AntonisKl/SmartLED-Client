@@ -11,23 +11,17 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.skydoves.colorpickerview.ColorEnvelope;
 import com.skydoves.colorpickerview.ColorPickerView;
 import com.skydoves.colorpickerview.listeners.ColorEnvelopeListener;
-import com.skydoves.colorpickerview.listeners.ColorListener;
 import com.skydoves.colorpickerview.sliders.BrightnessSlideBar;
 
 import java.util.Arrays;
@@ -36,11 +30,12 @@ import java.util.Arrays;
 public class MainActivity extends AppCompatActivity {
 
     SharedPreferences storedSettings;
+    String storedUrl;
     ColorPickerView colorPicker;
     int[] argb;
     String defaultUrl;
-    String storedUrl;
     RequestQueue requestQueue;
+    RequestHandler requestHandler;
     Button colorModesButton;
     ImageButton offButton;
     BrightnessSlideBar brightnessSlideBar;
@@ -85,15 +80,16 @@ public class MainActivity extends AppCompatActivity {
         argb = new int[4];
 
         defaultUrl = getResources().getString(R.string.default_url);
-        storedSettings = getPreferences(Context.MODE_PRIVATE);
+        storedSettings = getSharedPreferences("Settings",Context.MODE_PRIVATE);
+        storedUrl = storedSettings.getString("URL", defaultUrl);
 
         requestQueue = Volley.newRequestQueue(getApplicationContext());
+        requestHandler = new RequestHandler(requestQueue);
 
         offButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                storedUrl = storedSettings.getString("URL", defaultUrl);
-                sendPostColorHttpRequest(storedUrl, new int[]{0, 0, 0, 0});
+                requestHandler.addSetColorHttpRequest(storedUrl, new int[]{0, 0, 0, 0});
             }
         });
 
@@ -102,9 +98,8 @@ public class MainActivity extends AppCompatActivity {
             public void onColorSelected(ColorEnvelope colorEnvelope, boolean fromUser) {
                 if (!Arrays.equals(argb, colorEnvelope.getArgb())) {
                     argb = colorEnvelope.getArgb();
-                    storedUrl = storedSettings.getString("URL", defaultUrl);
-                    Log.i("argb", "a=" + argb[0] + ", r=" + argb[1] + ", g=" + argb[2] + ", b=" + argb[3]);
-                    sendPostColorHttpRequest(storedUrl, argb);
+//                    Log.i("argb", "a=" + argb[0] + ", r=" + argb[1] + ", g=" + argb[2] + ", b=" + argb[3]);
+                    requestHandler.addSetColorHttpRequest(storedUrl, argb);
 //                    ColorPickerPreferenceManager.getInstance().saveColorPickerData(colorPicker);
                 }
             }
@@ -114,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, ColorModesActivity.class);
-                intent.putExtra("URL", storedSettings.getString("URL", defaultUrl));
+                intent.putExtra("URL", storedUrl);
                 startActivity(intent);
             }
         });
@@ -123,24 +118,10 @@ public class MainActivity extends AppCompatActivity {
         colorPicker.attachBrightnessSlider(brightnessSlideBar);
     }
 
-    void sendPostColorHttpRequest(String baseUrl, int[] argb) {
-        // calculate color with brightness
-
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, baseUrl + "setColor?r=" + argb[1] + "&g=" + argb[2] + "&b=" + argb[3],
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        // Display the first 500 characters of the response string.
-//						Log.i("POST Request", "Got response");
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-//                        Log.i("POST Request", "Error: " + error);
-                    }
-                });
-        requestQueue.add(stringRequest);
+    @Override
+    protected void onResume() {
+        super.onResume();
+        storedUrl = storedSettings.getString("URL", defaultUrl);
     }
 
     @Override
@@ -198,8 +179,7 @@ public class MainActivity extends AppCompatActivity {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                storedUrl = storedSettings.getString("URL", defaultUrl);
-                sendPostColorHttpRequest(storedUrl, argb);
+                requestHandler.addSetColorHttpRequest(storedUrl, argb);
             }
         };
     }
