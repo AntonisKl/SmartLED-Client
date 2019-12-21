@@ -44,7 +44,7 @@ public class SettingsFragment extends DialogFragment {
         // Inflate the layout for this fragment
         View fragmentView = inflater.inflate(R.layout.fragment_settings, container, false);
 
-        storedSettings = getActivity().getPreferences(Context.MODE_PRIVATE);
+        storedSettings = getContext().getSharedPreferences("Settings", Context.MODE_PRIVATE);
         urlText = fragmentView.findViewById(R.id.text_ip_address);
         submitSettingsButton = fragmentView.findViewById(R.id.button_submit_settings);
 

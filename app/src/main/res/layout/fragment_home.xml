@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".HomeFragment">
+
+    <View
+        android:id="@+id/toolbar_space"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"/>
+
+    <ImageButton
+        android:id="@+id/button_off"
+        android:layout_width="35dp"
+        android:layout_height="33dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/button_off"
+        android:scaleType="fitCenter"
+        android:src="@drawable/button_off_48dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_space" />
+
+    <com.skydoves.colorpickerview.ColorPickerView
+        android:id="@+id/view_color_picker"
+        android:layout_width="300dp"
+        android:layout_height="280dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginRight="20dp"
+        app:layout_constraintBottom_toTopOf="@id/horizontalScrollView_colors"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="@id/frameLayout_slider"
+        app:layout_constraintTop_toBottomOf="@id/button_off"
+        app:palette="@drawable/palette"
+        app:selector="@drawable/wheel" />
+
+
+    <FrameLayout
+        android:id="@+id/frameLayout_slider"
+        android:layout_width="40dp"
+        android:layout_height="280dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginRight="20dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@id/horizontalScrollView_colors"
+        app:layout_constraintLeft_toRightOf="@id/view_color_picker"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/button_off"
+        app:layout_constraintVertical_bias="0.514">
+
+        <com.skydoves.colorpickerview.sliders.BrightnessSlideBar
+            android:id="@+id/brightnessSlide"
+            android:layout_width="279dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:rotation="90"
+            app:borderColor_BrightnessSlider="@android:color/darker_gray"
+            app:borderSize_BrightnessSlider="0"
+            app:selector_BrightnessSlider="@drawable/wheel" />
+
+    </FrameLayout>
+
+    <HorizontalScrollView
+        android:id="@+id/horizontalScrollView_colors"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/view_color_picker">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/button_red"
+                style="@style/button_color"
+                android:backgroundTint="#ff0000" />
+
+            <ImageButton
+                android:id="@+id/button_green"
+                style="@style/button_color"
+                android:backgroundTint="#00ff00" />
+
+
+            <ImageButton
+                android:id="@+id/button_blue"
+                style="@style/button_color"
+                android:backgroundTint="#0000ff" />
+
+            <ImageButton
+                android:id="@+id/button_yellow"
+                style="@style/button_color"
+                android:backgroundTint="#ffff00" />
+
+            <ImageButton
+                android:id="@+id/button_cyan"
+                style="@style/button_color"
+                android:backgroundTint="#00ffff" />
+
+            <ImageButton
+                android:id="@+id/button_purple"
+                style="@style/button_color"
+                android:backgroundTint="#ff00ff" />
+
+            <ImageButton
+                android:id="@+id/button_white"
+                style="@style/button_color"
+                android:backgroundTint="#ffffff" />
+
+        </LinearLayout>
+    </HorizontalScrollView>
+
+
+    <!--<Button-->
+    <!--android:id="@+id/button_color_modes"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_gravity="center"-->
+    <!--android:text="modes"-->
+    <!--app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--app:layout_constraintLeft_toLeftOf="parent"-->
+    <!--app:layout_constraintRight_toRightOf="parent"-->
+    <!--app:layout_constraintTop_toBottomOf="@id/horizontalScrollView_colors" />-->
+
+</android.support.constraint.ConstraintLayout>

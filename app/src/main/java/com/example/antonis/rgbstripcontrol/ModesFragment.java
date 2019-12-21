@@ -1,0 +1,75 @@
+package com.example.antonis.rgbstripcontrol;
+
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.net.Uri;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ListView;
+
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.Volley;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+public class ModesFragment extends Fragment {
+
+    private static final String STORED_URL = "stored_url";
+
+    ListView colorModesList;
+    String defaultUrl;
+    SharedPreferences storedSettings;
+    RequestHandler requestHandler;
+
+    public ModesFragment() {
+        // Required empty public constructor
+    }
+
+    public static ModesFragment newInstance() {
+        return new ModesFragment();
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_modes, container, false);
+
+        colorModesList = view.findViewById(R.id.color_modes_list);
+
+        return view;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        defaultUrl = getString(R.string.default_url);
+        storedSettings = getActivity().getSharedPreferences(getString(R.string.settings), Context.MODE_PRIVATE);
+
+        requestHandler = new RequestHandler(Volley.newRequestQueue(getActivity()));
+
+        List<ColorModesListAdapter.ColorModeListItem> colorModeListItems = new ArrayList<>();
+        colorModeListItems.add(new ColorModesListAdapter.ColorModeListItem("Rainbow effect", -1, new int[]{255, 255, 255}, new ColorModesListAdapter.ColorModeListItemOnClickI() {
+            @Override
+            public void onClick() {
+                requestHandler.addRainbowEffectHttpRequest(storedSettings.getString("URL", defaultUrl), 1);
+            }
+        }));
+
+        colorModesList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                ((ColorModesListAdapter.ColorModeListItem) adapterView.getItemAtPosition(i)).onClickI.onClick();
+            }
+        });
+
+        colorModesList.setAdapter(new ColorModesListAdapter(getActivity(), colorModeListItems));
+    }
+}
