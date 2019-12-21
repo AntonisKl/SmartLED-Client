@@ -10,7 +10,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
+import android.widget.Switch;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
@@ -27,7 +29,7 @@ public class HomeFragment extends Fragment {
     String defaultUrl;
     SharedPreferences storedSettings;
     RequestHandler requestHandler;
-    ImageButton offButton;
+    Switch onOffSwitch;
     BrightnessSlideBar brightnessSlideBar;
     ImageButton redButton, greenButton, blueButton, cyanButton, yellowButton, purpleButton, whiteButton;
     int[] argb;
@@ -46,6 +48,7 @@ public class HomeFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
+        onOffSwitch = view.findViewById(R.id.switch_on_off);
         colorPicker = view.findViewById(R.id.view_color_picker);
         brightnessSlideBar = view.findViewById(R.id.brightnessSlide);
         initPresetColorButtons(view);
@@ -66,10 +69,15 @@ public class HomeFragment extends Fragment {
 
         requestHandler = new RequestHandler(Volley.newRequestQueue(getActivity()));
 
-        offButton.setOnClickListener(new View.OnClickListener() {
+        onOffSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View view) {
-                requestHandler.addSetColorHttpRequest(storedSettings.getString("URL", defaultUrl), new int[]{0, 0, 0, 0});
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (isChecked) {
+                    argb = colorPicker.getColorEnvelope().getArgb();
+                    requestHandler.addSetColorHttpRequest(storedSettings.getString("URL", defaultUrl), argb);
+                }else {
+                    requestHandler.addSetColorHttpRequest(storedSettings.getString("URL", defaultUrl), new int[]{0, 0, 0, 0});
+                }
             }
         });
 
@@ -85,7 +93,6 @@ public class HomeFragment extends Fragment {
     }
 
     void initPresetColorButtons(View view) {
-        offButton = view.findViewById(R.id.button_off);
         redButton = view.findViewById(R.id.button_red);
         greenButton = view.findViewById(R.id.button_green);
         blueButton = view.findViewById(R.id.button_blue);

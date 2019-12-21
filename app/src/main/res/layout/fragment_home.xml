@@ -9,17 +9,16 @@
     <View
         android:id="@+id/toolbar_space"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"/>
+        android:layout_height="?attr/actionBarSize" />
 
-    <ImageButton
-        android:id="@+id/button_off"
-        android:layout_width="35dp"
-        android:layout_height="33dp"
+    <Switch
+        android:id="@+id/switch_on_off"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="20dp"
-        android:background="@drawable/button_off"
-        android:scaleType="fitCenter"
-        android:src="@drawable/button_off_48dp"
+        android:checked="true"
+        android:thumb="@drawable/switch_on_off_thumb"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar_space" />
@@ -35,7 +34,7 @@
         app:layout_constraintBottom_toTopOf="@id/horizontalScrollView_colors"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="@id/frameLayout_slider"
-        app:layout_constraintTop_toBottomOf="@id/button_off"
+        app:layout_constraintTop_toBottomOf="@id/switch_on_off"
         app:palette="@drawable/palette"
         app:selector="@drawable/wheel" />
 
@@ -45,14 +44,13 @@
         android:layout_width="40dp"
         android:layout_height="280dp"
         android:layout_gravity="center"
-        android:layout_marginTop="20dp"
         android:layout_marginEnd="20dp"
         android:layout_marginRight="20dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@id/horizontalScrollView_colors"
         app:layout_constraintLeft_toRightOf="@id/view_color_picker"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/button_off"
+        app:layout_constraintTop_toBottomOf="@id/switch_on_off"
         app:layout_constraintVertical_bias="0.514">
 
         <com.skydoves.colorpickerview.sliders.BrightnessSlideBar
