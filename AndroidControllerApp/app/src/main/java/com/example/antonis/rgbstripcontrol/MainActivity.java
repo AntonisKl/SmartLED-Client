@@ -57,6 +57,8 @@ public class MainActivity extends AppCompatActivity {
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
+        defaultUrl = getString(R.string.default_url);
+
         // default fragment
         openFragment(HomeFragment.newInstance());
     }
@@ -79,7 +81,11 @@ public class MainActivity extends AppCompatActivity {
 
         // Create and show the dialog.
         SettingsFragment newFragment = new SettingsFragment();
-        newFragment.setDefaultUrl(defaultUrl);
+        Bundle args = new Bundle();
+        args.putString("sharedPreferencesName", "Settings");
+        args.putString("settingName", "URL");
+        args.putString("settingDefaultValue", defaultUrl);
+        newFragment.setArguments(args);
         newFragment.show(getSupportFragmentManager(), "dialog");
     }
 

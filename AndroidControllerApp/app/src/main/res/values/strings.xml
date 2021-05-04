@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">SmartLED</string>
     <string name="settings">Settings</string>
+    <string name="rainbow_settings">Rainbow Settings</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -9,4 +10,6 @@
     <string name="title_activity_main">MainActivity</string>
     <string name="title_home">Home</string>
     <string name="title_modes">Modes</string>
+
+    <string name="rainbow_transition_speed">Transition Speed (ms)</string>
 </resources>

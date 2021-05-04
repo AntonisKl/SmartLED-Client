@@ -1,12 +1,11 @@
 package com.example.antonis.rgbstripcontrol;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -23,12 +22,14 @@ public class ColorModesListAdapter extends ArrayAdapter<ColorModesListAdapter.Co
         int imageId;
         int[] rgb;
         ColorModeListItemOnClickI onClickI;
+        ColorModeListItemOnClickI onSettingsClickI;
 
-        public ColorModeListItem(String name, int imageId, int[] rgb, ColorModeListItemOnClickI onClickI) {
-            colorModeName = name;
+        public ColorModeListItem(String colorModeName, int imageId, int[] rgb, ColorModeListItemOnClickI onClickI, ColorModeListItemOnClickI onSettingsClickI) {
+            this.colorModeName = colorModeName;
             this.imageId = imageId;
             this.rgb = rgb;
             this.onClickI = onClickI;
+            this.onSettingsClickI = onSettingsClickI;
         }
 
         void setColorModeName(String name) {
@@ -52,6 +53,7 @@ public class ColorModesListAdapter extends ArrayAdapter<ColorModesListAdapter.Co
     private static class ViewHolder {
         TextView colorModeName;
         ImageView colorModeImage;
+        ImageButton settingsImageButton;
     }
 
     public ColorModesListAdapter(Context context, List<ColorModeListItem> colorModeItems) {
@@ -63,7 +65,7 @@ public class ColorModesListAdapter extends ArrayAdapter<ColorModesListAdapter.Co
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         // Get the data item for this position
-        ColorModeListItem colorModeItem = getItem(position);
+        final ColorModeListItem colorModeItem = getItem(position);
         // Check if an existing view is being reused, otherwise inflate the view
         ViewHolder viewHolder; // view lookup cache stored in tag
 
@@ -74,6 +76,7 @@ public class ColorModesListAdapter extends ArrayAdapter<ColorModesListAdapter.Co
             convertView = inflater.inflate(R.layout.color_modes_list_item, parent, false);
             viewHolder.colorModeName = (TextView) convertView.findViewById(R.id.color_mode_text);
             viewHolder.colorModeImage = (ImageView) convertView.findViewById(R.id.color_mode_image);
+            viewHolder.settingsImageButton = (ImageButton) convertView.findViewById(R.id.settingsImageButton);
 
             convertView.setTag(viewHolder);
         } else {
@@ -82,6 +85,12 @@ public class ColorModesListAdapter extends ArrayAdapter<ColorModesListAdapter.Co
 
         if (colorModeItem != null) {
             viewHolder.colorModeName.setText(colorModeItem.getColorModeName());
+            viewHolder.settingsImageButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    colorModeItem.onSettingsClickI.onClick();
+                }
+            });
             if (colorModeItem.getImageId() != -1)
                 viewHolder.colorModeImage.setImageResource(colorModeItem.getImageId());
         }

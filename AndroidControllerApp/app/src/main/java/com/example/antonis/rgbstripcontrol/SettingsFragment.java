@@ -11,12 +11,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 
 public class SettingsFragment extends DialogFragment {
 
-    String urlStr;
-    EditText urlText;
+    String sharedPreferencesName;
+    String settingName;
+    String settingDefaultValue;
+    Float settingEditTextWeight;
+    TextView settingNameTextView;
+    EditText settingEditText;
     Button submitSettingsButton;
     SharedPreferences storedSettings;
 
@@ -25,10 +31,6 @@ public class SettingsFragment extends DialogFragment {
 //    public static interface OnSubmitSettingsListener {
 //        void OnSubmitSettings(String ipAddress);
 //    }
-
-    public void setDefaultUrl(String urlStr) {
-        this.urlStr = urlStr;
-    }
 
 //    public void setOnSubmitSettingsListener(OnSubmitSettingsListener onSubmitSettingsListener) {
 //        this.onSubmitSettingsListener = onSubmitSettingsListener;
@@ -44,25 +46,36 @@ public class SettingsFragment extends DialogFragment {
         // Inflate the layout for this fragment
         View fragmentView = inflater.inflate(R.layout.fragment_settings, container, false);
 
-        storedSettings = getContext().getSharedPreferences("Settings", Context.MODE_PRIVATE);
-        urlText = fragmentView.findViewById(R.id.text_ip_address);
+        sharedPreferencesName = getArguments().getString("sharedPreferencesName");
+        settingName = getArguments().getString("settingName");
+        settingDefaultValue = getArguments().getString("settingDefaultValue");
+        settingEditTextWeight = getArguments().getFloat("settingEditTextWeight", -1);
+        storedSettings = getContext().getSharedPreferences(sharedPreferencesName, Context.MODE_PRIVATE);
+        settingNameTextView = fragmentView.findViewById(R.id.setting_name);
+        settingEditText = fragmentView.findViewById(R.id.setting_value);
         submitSettingsButton = fragmentView.findViewById(R.id.button_submit_settings);
 
         getDialog().setTitle("Settings");
 
+        settingNameTextView.setText(settingName);
+        if (settingEditTextWeight != -1) {
+            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) settingEditText.getLayoutParams();
+            params.weight = settingEditTextWeight;
+            settingEditText.setLayoutParams(params);
+        }
 
-        String storedIpAddress = storedSettings.getString("URL", urlStr);
+        String storedIpAddress = storedSettings.getString(settingName, settingDefaultValue);
 
         if (storedIpAddress != null)
-            urlText.setText(storedIpAddress);
+            settingEditText.setText(storedIpAddress);
 
         submitSettingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!urlText.getText().toString().equals("")) {
+                if (!settingEditText.getText().toString().equals("")) {
 //                    onSubmitSettingsListener.OnSubmitSettings(urlText.getText().toString());
                     SharedPreferences.Editor editor = storedSettings.edit();
-                    editor.putString("URL", urlText.getText().toString());
+                    editor.putString(settingName, settingEditText.getText().toString());
                     editor.apply();
                 }
                 dismiss();

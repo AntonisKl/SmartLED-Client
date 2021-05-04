@@ -2,7 +2,6 @@ package com.example.antonis.rgbstripcontrol;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 
 import java.util.ArrayList;
@@ -25,7 +23,9 @@ public class ModesFragment extends Fragment {
 
     ListView colorModesList;
     String defaultUrl;
+    Integer defaultRainbowTransitionSpeedMs;
     SharedPreferences storedSettings;
+    SharedPreferences storedRainbowSettings;
     RequestHandler requestHandler;
 
     public ModesFragment() {
@@ -51,15 +51,22 @@ public class ModesFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         defaultUrl = getString(R.string.default_url);
+        defaultRainbowTransitionSpeedMs = 1;
         storedSettings = getActivity().getSharedPreferences(getString(R.string.settings), Context.MODE_PRIVATE);
+        storedRainbowSettings = getActivity().getSharedPreferences(getString(R.string.rainbow_settings), Context.MODE_PRIVATE);
 
         requestHandler = new RequestHandler(Volley.newRequestQueue(getActivity()));
 
         List<ColorModesListAdapter.ColorModeListItem> colorModeListItems = new ArrayList<>();
-        colorModeListItems.add(new ColorModesListAdapter.ColorModeListItem("Rainbow effect", -1, new int[]{255, 255, 255}, new ColorModesListAdapter.ColorModeListItemOnClickI() {
+        colorModeListItems.add(new ColorModesListAdapter.ColorModeListItem("Rainbow effect", R.drawable.ic_rainbow_48dp, new int[]{255, 255, 255}, new ColorModesListAdapter.ColorModeListItemOnClickI() {
             @Override
             public void onClick() {
-                requestHandler.addRainbowEffectHttpRequest(storedSettings.getString("URL", defaultUrl), 1);
+                requestHandler.addRainbowEffectHttpRequest(storedSettings.getString("URL", defaultUrl), Integer.parseInt(storedRainbowSettings.getString(getString(R.string.rainbow_transition_speed), defaultRainbowTransitionSpeedMs.toString())));
+            }
+        }, new ColorModesListAdapter.ColorModeListItemOnClickI() {
+            @Override
+            public void onClick() {
+                showSettingsDialog(getString(R.string.rainbow_settings),getString(R.string.rainbow_transition_speed));
             }
         }));
 
@@ -71,5 +78,25 @@ public class ModesFragment extends Fragment {
         });
 
         colorModesList.setAdapter(new ColorModesListAdapter(getActivity(), colorModeListItems));
+    }
+
+    private void showSettingsDialog(String sharedPreferencesName, String settingName) {
+        android.app.FragmentTransaction ft = getActivity().getFragmentManager().beginTransaction();
+        android.app.Fragment prev = getActivity().getFragmentManager().findFragmentByTag("dialog");
+        if (prev != null) {
+            ft.remove(prev);
+        }
+        ft.addToBackStack(null);
+        ft.commit();
+
+        // Create and show the dialog.
+        SettingsFragment newFragment = new SettingsFragment();
+        Bundle args = new Bundle();
+        args.putString("sharedPreferencesName", sharedPreferencesName);
+        args.putString("settingName", settingName);
+        args.putString("settingDefaultValue", defaultRainbowTransitionSpeedMs.toString());
+        args.putFloat("settingEditTextWeight", 0.2f);
+        newFragment.setArguments(args);
+        newFragment.show(getActivity().getSupportFragmentManager(), "dialog");
     }
 }
